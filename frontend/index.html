@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dermitkes</title>
+  <link id="theme-stylesheet" rel="stylesheet" href="assets/css/light/styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+<header class="google-header">
+  <div class="header-logo">
+    <a href="index.html">
+      <img id="header-logo-img" src="assets/images/light/logo.png" alt="Dermitkes Logo" class="header-logo-img">
+    </a>
+  </div>
+  <div class="user-menu">
+    <img id="user-icon" src="assets/images/light/user.png" alt="Иконка пользователя" class="user-icon" onclick="toggleUserMenu()">
+    <div class="dropdown-menu" id="user-dropdown">
+      <!-- Динамически обновляется через JavaScript -->
+    </div>
+  </div>
+</header>
+
+<div class="google-container">
+  <img id="google-logo" src="assets/images/light/logo.png" alt="Dermitkes Logo" class="google-logo">
+  <form class="search-form" onsubmit="event.preventDefault(); search();">
+    <div class="search-bar" id="search-bar">
+      <img id="search-icon" src="assets/images/light/search.png" alt="Поиск" class="search-icon">
+      <input type="text" id="search-input" placeholder="Поиск..." oninput="handleInput()" autocomplete="off">
+      <img id="clear-icon" src="assets/images/light/clear.png" alt="Очистить" class="clear-icon" onclick="clearSearch()">
+      <div class="autocomplete-suggestions" id="autocomplete-suggestions"></div>
+    </div>
+    <div class="search-buttons">
+      <button type="submit">Поиск Dermitkes</button>
+      <button onclick="window.location.href='https://www.google.com'">Поиск Google</button>
+    </div>
+  </form>
+</div>
+
+<div class="overlay" id="overlay"></div>
+
+<div class="widget settings-widget" id="settings-widget">
+  <div class="widget-content">
+    <h3>Настройки</h3>
+    <div class="settings-options">
+      <div class="toggle-container">
+        <label for="dark-mode" class="toggle-label">Тёмная тема</label>
+        <input type="checkbox" id="dark-mode" onchange="toggleTheme()">
+        <label for="dark-mode" class="toggle-switch"></label>
+      </div>
+      <div class="toggle-container">
+        <label for="notifications" class="toggle-label">Уведомления</label>
+        <input type="checkbox" id="notifications">
+        <label for="notifications" class="toggle-switch"></label>
+      </div>
+    </div>
+    <button onclick="closeWidget('settings-widget')">Закрыть</button>
+  </div>
+</div>
+
+<div class="widget account-widget" id="account-widget">
+  <div class="widget-content">
+    <h3>Аккаунт</h3>
+    <div class="auth-tabs">
+      <button class="tab active" onclick="showTab('login-tab')">Вход</button>
+      <button class="tab" onclick="showTab('register-tab')">Регистрация</button>
+    </div>
+    <div id="login-tab" class="auth-tab">
+      <input type="text" id="login-username" placeholder="Почта или никнейм"><br>
+      <input type="password" id="login-password" placeholder="Пароль"><br>
+      <button onclick="handleAuth('login')">Войти</button>
+    </div>
+    <div id="register-tab" class="auth-tab" style="display: none;">
+      <input type="text" id="register-nickname" placeholder="Никнейм"><br>
+      <input type="email" id="register-email" placeholder="Email"><br>
+      <input type="password" id="register-password" placeholder="Пароль"><br>
+      <div class="date-input-container">
+        <input type="text" id="register-date" placeholder="Дата рождения" readonly>
+        <img id="calendar-icon" src="assets/images/light/calendar.png" alt="Календарь" class="calendar-icon" onclick="toggleCalendar()">
+      </div>
+      <div class="calendar-widget" id="calendar-widget">
+        <div class="calendar-header">
+          <button onclick="changeMonth(-1)"><</button>
+          <span id="calendar-month-year"></span>
+          <button onclick="changeMonth(1)">></button>
+        </div>
+        <div class="calendar-days">
+          <div>Пн</div><div>Вт</div><div>Ср</div><div>Чт</div><div>Пт</div><div>Сб</div><div>Вс</div>
+        </div>
+        <div class="calendar-dates" id="calendar-dates"></div>
+      </div>
+      <button onclick="handleAuth('register')">Зарегистрироваться</button>
+    </div>
+    <button onclick="closeWidget('account-widget')">Закрыть</button>
+  </div>
+</div>
+
+<div class="widget help-widget" id="help-widget">
+  <div class="widget-content">
+    <h3>Помощь</h3>
+    <div class="help-image-container">
+      <img id="help-image" src="assets/images/light/hidden_content.png" alt="Скрытый контент" class="help-image">
+      <img id="help-meme" src="assets/images/light/help_meme.png" alt="Мем" class="help-meme">
+    </div>
+    <p>Чтобы найти информацию на сайте Dermitkes, используйте поисковую строку на главной странице. Введите ключевые слова, такие как "программист", "ресурсы" или "поддержать", и вы будете перенаправлены на нужную страницу.</p>
+    <button onclick="closeWidget('help-widget')">Закрыть</button>
+  </div>
+</div>
+
+<footer class="google-footer">
+  <div class="footer-links">
+    <a href="#" onclick="showSettingsWidget()">Настройки</a>
+    <a href="#" onclick="showHelpWidget()">Помощь</a>
+  </div>
+</footer>
+
+<script src="assets/js/auth.js"></script>
+<script src="assets/js/widgets.js"></script>
+<script src="assets/js/keywords.js"></script>
+<script>
+  // Функция для загрузки темы
+  function loadTheme() {
+    const isDarkMode = localStorage.getItem('dark-mode') === 'true';
+    document.getElementById('dark-mode').checked = isDarkMode;
+    updateImages(isDarkMode);
+    updateThemeStylesheet(isDarkMode);
+  }
+
+  // Функция для переключения темы
+  function toggleTheme() {
+    const isDarkMode = document.getElementById('dark-mode').checked;
+    localStorage.setItem('dark-mode', isDarkMode);
+    updateImages(isDarkMode);
+    updateThemeStylesheet(isDarkMode);
+  }
+
+  // Функция для обновления стилей темы
+  function updateThemeStylesheet(isDarkMode) {
+    const stylesheet = document.getElementById('theme-stylesheet');
+    stylesheet.href = isDarkMode ? 'assets/css/dark/styles.css' : 'assets/css/light/styles.css';
+  }
+
+  // Функция для обновления путей к изображениям
+  function updateImages(isDarkMode) {
+    const themePath = isDarkMode ? 'assets/images/dark/' : 'assets/images/light/';
+    document.getElementById('header-logo-img').src = themePath + 'logo.png';
+    document.getElementById('google-logo').src = themePath + 'logo.png';
+    document.getElementById('search-icon').src = themePath + 'search.png';
+    document.getElementById('clear-icon').src = themePath + 'clear.png';
+    document.getElementById('user-icon').src = themePath + 'user.png';
+    document.getElementById('help-image').src = themePath + 'hidden_content.png';
+    document.getElementById('help-meme').src = themePath + 'help_meme.png';
+    document.getElementById('calendar-icon').src = themePath + 'calendar.png';
+  }
+
+  // Функция для обновления выпадающего меню
+  function updateUserMenu() {
+    const dropdownMenu = document.getElementById('user-dropdown');
+    const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+
+    dropdownMenu.innerHTML = '';
+
+    const menuItems = [];
+    menuItems.push({ text: 'Настройки', action: "showSettingsWidget()" });
+    menuItems.push({ text: 'Помощь', action: "showHelpWidget()" });
+
+    if (!isLoggedIn) {
+      menuItems.push({ text: 'Вход', action: "showAccountWidget()" });
+    }
+
+    if (isLoggedIn) {
+      menuItems.push({ text: 'Админ-панель', action: "window.location.href='admin.html'" });
+    }
+
+    if (isLoggedIn) {
+      menuItems.push({ text: 'Выход', action: "logout()" });
+    }
+
+    menuItems.forEach(item => {
+      const link = document.createElement('a');
+      link.href = '#';
+      link.textContent = item.text;
+      link.setAttribute('onclick', item.action);
+      dropdownMenu.appendChild(link);
+    });
+  }
+
+  // Функция выхода
+  function logout() {
+    localStorage.setItem('isLoggedIn', 'false');
+    updateUserMenu();
+    closeWidget('account-widget');
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    updateUserMenu();
+    loadTheme();
+
+    const searchBar = document.getElementById('search-bar');
+    const autocompleteSuggestions = document.getElementById('autocomplete-suggestions');
+
+    document.addEventListener('click', (e) => {
+      if (!searchBar.contains(e.target)) {
+        autocompleteSuggestions.classList.remove('active');
+        searchBar.classList.remove('active');
+      }
+    });
+  });
+</script>
+</body>
+</html>

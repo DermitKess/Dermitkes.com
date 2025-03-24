@@ -1,0 +1,9 @@
+[
+  {
+    "title": "LightWork Browser",
+    "description": "Простой, с минимумом функций браузер на Python и PyQt6. Сделан для теста производительности Python как веб языка.",
+    "type": "github",
+    "url": "https://github.com/DermitKess/LightWorkBrowser/tree/master",
+    "image": "https://i.imgur.com/dvlTRYZ.png"
+  }
+]

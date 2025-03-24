@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Админ-панель - Dermitkes</title>
+  <link id="theme-stylesheet" rel="stylesheet" href="assets/css/light/styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+<!-- Шапка страницы -->
+<header class="google-header">
+  <div class="header-logo">
+    <a href="index.html">
+      <img id="header-logo-img" src="assets/images/light/logo.png" alt="Dermitkes Logo" class="header-logo-img">
+    </a>
+  </div>
+  <div class="user-menu">
+    <img id="user-icon" src="assets/images/light/user.png" alt="Иконка пользователя" class="user-icon" onclick="toggleUserMenu()">
+    <div class="dropdown-menu" id="user-dropdown">
+      <!-- Динамически обновляется через JavaScript -->
+    </div>
+  </div>
+</header>
+
+<!-- Основной контент -->
+<div class="content-container">
+  <h1>Админ-панель</h1>
+  <p>Здесь вы можете управлять ресурсами на сайте Dermitkes.</p>
+
+  <div class="admin-grid">
+    <div class="admin-item" onclick="showResourcesAdminWidget()">
+      <h3>Ресурсы</h3>
+      <p>Управление списком ресурсов</p>
+    </div>
+  </div>
+</div>
+
+<!-- Оверлей для затемнения фона при открытии виджетов -->
+<div class="overlay" id="overlay"></div>
+
+<!-- Виджет настроек -->
+<div class="widget settings-widget" id="settings-widget">
+  <div class="widget-content">
+    <h3>Настройки</h3>
+    <div class="settings-options">
+      <div class="toggle-container">
+        <label for="dark-mode" class="toggle-label">Тёмная тема</label>
+        <input type="checkbox" id="dark-mode" onchange="toggleTheme()">
+        <label for="dark-mode" class="toggle-switch"></label>
+      </div>
+      <div class="toggle-container">
+        <label for="notifications" class="toggle-label">Уведомления</label>
+        <input type="checkbox" id="notifications">
+        <label for="notifications" class="toggle-switch"></label>
+      </div>
+    </div>
+    <button onclick="closeWidget('settings-widget')">Закрыть</button>
+  </div>
+</div>
+
+<!-- Виджет аккаунта -->
+<div class="widget account-widget" id="account-widget">
+  <div class="widget-content">
+    <h3>Аккаунт</h3>
+    <div class="auth-tabs">
+      <button class="tab active" onclick="showTab('login-tab')">Вход</button>
+      <button class="tab" onclick="showTab('register-tab')">Регистрация</button>
+    </div>
+    <div id="login-tab" class="auth-tab">
+      <input type="text" id="login-username" placeholder="Почта или никнейм"><br>
+      <input type="password" id="login-password" placeholder="Пароль"><br>
+      <button onclick="handleAuth('login')">Войти</button>
+    </div>
+    <div id="register-tab" class="auth-tab" style="display: none;">
+      <input type="text" id="register-nickname" placeholder="Никнейм"><br>
+      <input type="email" id="register-email" placeholder="Email"><br>
+      <input type="password" id="register-password" placeholder="Пароль"><br>
+      <div class="date-input-container">
+        <input type="text" id="register-date" placeholder="Дата рождения" readonly>
+        <img id="calendar-icon" src="assets/images/light/calendar.png" alt="Календарь" class="calendar-icon" onclick="toggleCalendar()">
+      </div>
+      <div class="calendar-widget" id="calendar-widget">
+        <div class="calendar-header">
+          <button onclick="changeMonth(-1)"><</button>
+          <span id="calendar-month-year"></span>
+          <button onclick="changeMonth(1)">></button>
+        </div>
+        <div class="calendar-days">
+          <div>Пн</div><div>Вт</div><div>Ср</div><div>Чт</div><div>Пт</div><div>Сб</div><div>Вс</div>
+        </div>
+        <div class="calendar-dates" id="calendar-dates"></div>
+      </div>
+      <button onclick="handleAuth('register')">Зарегистрироваться</button>
+    </div>
+    <button onclick="closeWidget('account-widget')">Закрыть</button>
+  </div>
+</div>
+
+<!-- Виджет помощи -->
+<div class="widget help-widget" id="help-widget">
+  <div class="widget-content">
+    <h3>Помощь</h3>
+    <div class="help-image-container">
+      <img id="help-image" src="assets/images/light/hidden_content.png" alt="Скрытый контент" class="help-image">
+      <img id="help-meme" src="assets/images/light/help_meme.png" alt="Мем" class="help-meme">
+    </div>
+    <p>Чтобы найти информацию на сайте Dermitkes, используйте поисковую строку на главной странице. Введите ключевые слова, такие как "программист", "ресурсы" или "поддержать", и вы будете перенаправлены на нужную страницу.</p>
+    <button onclick="closeWidget('help-widget')">Закрыть</button>
+  </div>
+</div>
+
+<!-- Виджет управления ресурсами -->
+<div class="widget resources-admin-widget" id="resources-admin-widget">
+  <div class="widget-content">
+    <h3>Управление ресурсами</h3>
+    <button onclick="showAddProjectWidget()">Добавить проект</button>
+    <div class="projects-list" id="projects-list">
+      <!-- Динамически заполняется через JavaScript -->
+    </div>
+    <button onclick="closeWidget('resources-admin-widget')">Закрыть</button>
+  </div>
+</div>
+
+<!-- Виджет добавления проекта -->
+<div class="widget add-project-widget" id="add-project-widget">
+  <div class="widget-content">
+    <h3>Добавить проект</h3>
+    <input type="text" id="project-title" placeholder="Название проекта">
+    <textarea id="project-description" placeholder="Описание проекта"></textarea>
+    <select id="project-type">
+      <option value="youtube">YouTube</option>
+      <option value="github">GitHub</option>
+      <option value="discord">Discord</option>
+      <option value="telegram">Telegram</option>
+    </select>
+    <input type="text" id="project-url" placeholder="URL ресурса">
+    <input type="text" id="project-image" placeholder="Прямая ссылка на изображение">
+    <div class="widget-buttons">
+      <button onclick="addProject()">Добавить</button>
+      <button onclick="closeWidget('add-project-widget')">Отмена</button>
+    </div>
+    <div class="error-message" id="add-error-message"></div>
+  </div>
+</div>
+
+<!-- Виджет редактирования проекта -->
+<div class="widget edit-project-widget" id="edit-project-widget">
+  <div class="widget-content">
+    <h3>Редактировать проект</h3>
+    <input type="text" id="edit-project-title" placeholder="Название проекта">
+    <textarea id="edit-project-description" placeholder="Описание проекта"></textarea>
+    <select id="edit-project-type">
+      <option value="youtube">YouTube</option>
+      <option value="github">GitHub</option>
+      <option value="discord">Discord</option>
+      <option value="telegram">Telegram</option>
+    </select>
+    <input type="text" id="edit-project-url" placeholder="URL ресурса">
+    <input type="text" id="edit-project-image" placeholder="Прямая ссылка на изображение">
+    <div class="widget-buttons">
+      <button onclick="saveProject()">Сохранить</button>
+      <button onclick="closeWidget('edit-project-widget')">Отмена</button>
+    </div>
+    <div class="error-message" id="edit-error-message"></div>
+  </div>
+</div>
+
+<!-- Футер -->
+<footer class="google-footer">
+  <div class="footer-links">
+    <a href="#" onclick="showSettingsWidget()">Настройки</a>
+    <a href="#" onclick="showHelpWidget()">Помощь</a>
+  </div>
+</footer>
+
+<!-- Подключение скриптов -->
+<script src="assets/js/auth.js"></script>
+<script src="assets/js/widgets.js"></script>
+<script src="assets/js/admin.js"></script>
+<script>
+  // Функция для обновления выпадающего меню
+  function updateUserMenu() {
+    const dropdownMenu = document.getElementById('user-dropdown');
+    const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+
+    dropdownMenu.innerHTML = '';
+
+    const menuItems = [];
+    menuItems.push({ text: 'Настройки', action: "showSettingsWidget()" });
+    menuItems.push({ text: 'Помощь', action: "showHelpWidget()" });
+
+    if (!isLoggedIn) {
+      menuItems.push({ text: 'Вход', action: "showAccountWidget()" });
+    }
+
+    if (isLoggedIn) {
+      menuItems.push({ text: 'Админ-панель', action: "window.location.href='admin.html'" });
+    }
+
+    if (isLoggedIn) {
+      menuItems.push({ text: 'Выход', action: "logout()" });
+    }
+
+    menuItems.forEach(item => {
+      const link = document.createElement('a');
+      link.href = '#';
+      link.textContent = item.text;
+      link.setAttribute('onclick', item.action);
+      dropdownMenu.appendChild(link);
+    });
+  }
+
+  // Функция выхода
+  function logout() {
+    localStorage.setItem('isLoggedIn', 'false');
+    updateUserMenu();
+    closeWidget('account-widget');
+  }
+
+  // Инициализация при загрузке страницы
+  document.addEventListener('DOMContentLoaded', () => {
+    updateUserMenu();
+    loadTheme();
+  });
+</script>
+</body>
+</html>

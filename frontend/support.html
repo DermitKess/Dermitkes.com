@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Поддержка - Dermitkes</title>
+  <link id="theme-stylesheet" rel="stylesheet" href="assets/css/light/styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+<header class="google-header">
+  <div class="header-logo">
+    <a href="index.html">
+      <img id="header-logo-img" src="assets/images/light/logo.png" alt="Dermitkes Logo" class="header-logo-img">
+    </a>
+  </div>
+  <div class="user-menu">
+    <img id="user-icon" src="assets/images/light/user.png" alt="Иконка пользователя" class="user-icon" onclick="toggleUserMenu()">
+    <div class="dropdown-menu" id="user-dropdown"></div>
+  </div>
+</header>
+
+<div class="content-container">
+  <h1>Поддержать проект</h1>
+  <p>Если вам нравится Dermitkes, вы можете поддержать нас! Вот несколько способов:</p>
+  <h2>Социальные сети</h2>
+  <ul class="social-links">
+    <li><a href="https://twitter.com/dermitkes">Twitter</a></li>
+    <li><a href="https://github.com/dermitkes">GitHub</a></li>
+    <li><a href="https://discord.gg/dermitkes">Discord</a></li>
+  </ul>
+  <h2>Донаты</h2>
+  <p>Вы можете поддержать нас финансово через Patreon:</p>
+  <ul>
+    <li><a href="https://patreon.com/dermitkes">Patreon</a></li>
+  </ul>
+</div>
+
+<div class="overlay" id="overlay"></div>
+
+<div class="widget settings-widget" id="settings-widget">
+  <div class="widget-content">
+    <h3>Настройки</h3>
+    <div class="settings-options">
+      <div class="toggle-container">
+        <label for="dark-mode" class="toggle-label">Тёмная тема</label>
+        <input type="checkbox" id="dark-mode" onchange="toggleTheme()">
+        <label for="dark-mode" class="toggle-switch"></label>
+      </div>
+      <div class="toggle-container">
+        <label for="notifications" class="toggle-label">Уведомления</label>
+        <input type="checkbox" id="notifications">
+        <label for="notifications" class="toggle-switch"></label>
+      </div>
+    </div>
+    <button onclick="closeWidget('settings-widget')">Закрыть</button>
+  </div>
+</div>
+
+<div class="widget account-widget" id="account-widget">
+  <div class="widget-content">
+    <h3>Аккаунт</h3>
+    <div class="auth-tabs">
+      <button class="tab active" onclick="showTab('login-tab')">Вход</button>
+      <button class="tab" onclick="showTab('register-tab')">Регистрация</button>
+    </div>
+    <div id="login-tab" class="auth-tab">
+      <input type="text" id="login-username" placeholder="Почта или никнейм"><br>
+      <input type="password" id="login-password" placeholder="Пароль"><br>
+      <button onclick="handleAuth('login')">Войти</button>
+    </div>
+    <div id="register-tab" class="auth-tab" style="display: none;">
+      <input type="text" id="register-nickname" placeholder="Никнейм"><br>
+      <input type="email" id="register-email" placeholder="Email"><br>
+      <input type="password" id="register-password" placeholder="Пароль"><br>
+      <div class="date-input-container">
+        <input type="text" id="register-date" placeholder="Дата рождения" readonly>
+        <img id="calendar-icon" src="assets/images/light/calendar.png" alt="Календарь" class="calendar-icon" onclick="toggleCalendar()">
+      </div>
+      <div class="calendar-widget" id="calendar-widget">
+        <div class="calendar-header">
+          <button onclick="changeMonth(-1)"><</button>
+          <span id="calendar-month-year"></span>
+          <button onclick="changeMonth(1)">></button>
+        </div>
+        <div class="calendar-days">
+          <div>Пн</div><div>Вт</div><div>Ср</div><div>Чт</div><div>Пт</div><div>Сб</div><div>Вс</div>
+        </div>
+        <div class="calendar-dates" id="calendar-dates"></div>
+      </div>
+      <button onclick="handleAuth('register')">Зарегистрироваться</button>
+    </div>
+    <button onclick="closeWidget('account-widget')">Закрыть</button>
+  </div>
+</div>
+
+<div class="widget help-widget" id="help-widget">
+  <div class="widget-content">
+    <h3>Помощь</h3>
+    <div class="help-image-container">
+      <img id="help-image" src="assets/images/light/hidden_content.png" alt="Скрытый контент" class="help-image">
+      <img id="help-meme" src="assets/images/light/help_meme.png" alt="Мем" class="help-meme">
+    </div>
+    <p>Чтобы найти информацию на сайте Dermitkes, используйте поисковую строку на главной странице.</p>
+    <button onclick="closeWidget('help-widget')">Закрыть</button>
+  </div>
+</div>
+
+<footer class="google-footer">
+  <div class="footer-links">
+    <a href="#" onclick="showSettingsWidget()">Настройки</a>
+    <a href="#" onclick="showHelpWidget()">Помощь</a>
+  </div>
+</footer>
+
+<script src="assets/js/auth.js"></script>
+<script src="assets/js/widgets.js"></script>
+<script>
+  function loadTheme() {
+    const isDarkMode = localStorage.getItem('dark-mode') === 'true';
+    document.getElementById('dark-mode').checked = isDarkMode;
+    updateImages(isDarkMode);
+    updateThemeStylesheet(isDarkMode);
+  }
+
+  function toggleTheme() {
+    const isDarkMode = document.getElementById('dark-mode').checked;
+    localStorage.setItem('dark-mode', isDarkMode);
+    updateImages(isDarkMode);
+    updateThemeStylesheet(isDarkMode);
+  }
+
+  function updateThemeStylesheet(isDarkMode) {
+    const stylesheet = document.getElementById('theme-stylesheet');
+    stylesheet.href = isDarkMode ? 'assets/css/dark/styles.css' : 'assets/css/light/styles.css';
+  }
+
+  function updateImages(isDarkMode) {
+    const themePath = isDarkMode ? 'assets/images/dark/' : 'assets/images/light/';
+    document.getElementById('header-logo-img').src = themePath + 'logo.png';
+    document.getElementById('user-icon').src = themePath + 'user.png';
+    document.getElementById('help-image').src = themePath + 'hidden_content.png';
+    document.getElementById('help-meme').src = themePath + 'help_meme.png';
+    document.getElementById('calendar-icon').src = themePath + 'calendar.png';
+  }
+
+  function updateUserMenu() {
+    const dropdownMenu = document.getElementById('user-dropdown');
+    const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+
+    dropdownMenu.innerHTML = '';
+
+    const menuItems = [];
+    menuItems.push({ text: 'Настройки', action: "showSettingsWidget()" });
+    menuItems.push({ text: 'Помощь', action: "showHelpWidget()" });
+
+    if (!isLoggedIn) {
+      menuItems.push({ text: 'Вход', action: "showAccountWidget()" });
+    }
+
+    if (isLoggedIn) {
+      menuItems.push({ text: 'Админ-панель', action: "window.location.href='admin.html'" });
+    }
+
+    if (isLoggedIn) {
+      menuItems.push({ text: 'Выход', action: "logout()" });
+    }
+
+    menuItems.forEach(item => {
+      const link = document.createElement('a');
+      link.href = '#';
+      link.textContent = item.text;
+      link.setAttribute('onclick', item.action);
+      dropdownMenu.appendChild(link);
+    });
+  }
+
+  function logout() {
+    localStorage.setItem('isLoggedIn', 'false');
+    updateUserMenu();
+    closeWidget('account-widget');
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    updateUserMenu();
+    loadTheme();
+  });
+</script>
+</body>
+</html>
