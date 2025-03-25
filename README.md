@@ -1,3 +1,3 @@
 ## **What is this?**
 
-Test code of portfolio site, wrote inly by [Grok 3](https://grok.com/). 
+Test code of portfolio site, wrote only by [Grok 3](https://grok.com/). 
